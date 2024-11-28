@@ -1,0 +1,80 @@
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #bb86fc;
+}
+
+form, div, button {
+    margin-top: 20px;
+}
+
+label, textarea, input[type="text"] {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+textarea {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #bb86fc;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px; /* Easier to read font size */
+    line-height: 1.5; /* Easier to read line height */
+    font-family: 'Courier New', Courier, monospace; /* More appealing font */
+    max-width: 600px; /* Maximum width for the definition text box */
+}
+
+input[type="text"] {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #bb86fc;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px; /* Easier to read font size */
+    line-height: 1.5; /* Easier to read line height */
+    font-family: 'Courier New', Courier, monospace; /* More appealing font */
+    max-width: 300px; /* Maximum width for the new word text box */
+}
+
+input[type="button"], button {
+    background-color: #bb86fc;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin-top: 10px; /* Ensure some spacing between button and input */
+}
+
+input[type="button"]:hover, button:hover {
+    background-color: #3700b3;
+}
+
+.definition {
+    display: none;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #bb86fc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#wordDisplay {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #bb86fc;
+}
+
+#wordForm {
+    margin-top: 40px; /* Ensures some spacing from the other elements */
+}
