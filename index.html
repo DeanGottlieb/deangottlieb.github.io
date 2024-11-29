@@ -3,30 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fictionary</title>
+    <title>Family Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Phase Headers -->
+    <h1 id="submissionHeader" style="display: none;">Submit Your Definition <span id="definitionCount">(0)</span></h1>
+    <h1 id="definitionsHeader" style="display: none;">Submitted Definitions</h1>
+
+    <!-- Word of the Round -->
     <h1 id="wordDisplay"><span id="currentWord"><em>Waiting for next word...</em></span></h1>
-    
+
+    <!-- Word Form -->
     <form id="wordForm">
         <input type="text" id="word" name="word">
         <input type="button" value="Submit Word" onclick="submitWord()">
     </form>
-    <button id="startDefinitionsButton" onclick="startDefinitions()">Start Submitting Definitions</button>
+    <button id="startDefinitionsButton" onclick="startDefinitions()" class="important">Start Submitting Definitions</button>
     
-    <h1 id="submissionHeader" style="display: none;">Submit Your Definition <span id="definitionCount">(0)</span></h1>
+    <!-- Definition Form -->
     <form id="definitionForm" style="display: none;">
         <label for="definition">Your Definition:</label>
         <textarea id="definition" name="definition" rows="4" cols="40"></textarea>
         <input type="button" value="Submit" onclick="submitDefinition()">
     </form>
     
-    <h1 id="definitionsHeader" style="display: none;">Submitted Definitions</h1>
+    <!-- Definitions Container -->
     <div id="definitionsContainer"></div>
-    <button id="endSubmissionsButton" onclick="endSubmissions()" style="display: none;">End Submissions</button>
-    <button id="nextRoundButton" onclick="nextRound()" style="display: none;">Next Round</button>
+    <button id="endSubmissionsButton" onclick="endSubmissions()" style="display: none;" class="important">End Submissions</button>
+    <button id="nextRoundButton" onclick="nextRound()" style="display: none;" class="important">Next Round</button>
 
+    <!-- Firebase and Script -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="index.js"></script>

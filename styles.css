@@ -59,10 +59,19 @@ input[type="button"]:hover, button:hover {
     background-color: #3700b3;
 }
 
+button.important {
+    background-color: #710808; /* Red color for important buttons */
+    margin-top: 60px; /* Further separate from other elements */
+}
+
+input[type="button"].important:hover, button.important:hover {
+    background-color: #af4141;
+}
+
 .definition {
     display: none;
     background-color: #1e1e1e;
-    color: #ffffff;
+    color: #78d6ff;
     border: 1px solid #bb86fc;
     padding: 10px;
     border-radius: 5px;

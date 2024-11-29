@@ -152,6 +152,7 @@ const firebaseConfig = {
       document.getElementById('endSubmissionsButton').style.display = 'none';
       document.getElementById('definitionsHeader').style.display = 'none';
       document.getElementById('nextRoundButton').style.display = 'none';
+      document.getElementById('definitionsContainer').style.display = 'none';
   
       if (phase === 'definitionSubmission') {
           document.getElementById('submissionHeader').style.display = 'block';
@@ -163,6 +164,8 @@ const firebaseConfig = {
       } else if (phase === 'endSubmissions') {
           document.getElementById('definitionsHeader').style.display = 'block';
           document.getElementById('nextRoundButton').style.display = 'block';
+          document.getElementById('definitionsContainer').style.display = 'block';
+
           // Display the definitions only in the end submissions phase
           database.ref('definitionsOrder').once('value', function(snapshot) {
               const definitionsOrder = snapshot.val();
