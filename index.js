@@ -32,6 +32,13 @@ const firebaseConfig = {
           const phase = snapshot.val();
           updateUIForPhase(phase);
       });
+  
+      database.ref('definitionsOrder').on('value', function(snapshot) {
+          const definitionsOrder = snapshot.val();
+          if (definitionsOrder) {
+              displayDefinitions(definitionsOrder);
+          }
+      });
   }
   
   // Call loadCurrentWordAndPhase when the page loads
@@ -94,45 +101,47 @@ const firebaseConfig = {
       });
   }
   
-  // Function to display definitions
-  function displayDefinitions() {
-      database.ref('definitions').once('value', function(snapshot) {
-          const definitions = [];
-          snapshot.forEach(function(childSnapshot) {
-              definitions.push(childSnapshot.val().text);
-          });
-          const container = document.getElementById('definitionsContainer');
-          container.innerHTML = '';
-          definitions.sort(() => Math.random() - 0.5); // Randomize order
-          definitions.forEach((definition, index) => {
-              const definitionElement = document.createElement('div');
-              definitionElement.className = 'definition';
-              definitionElement.innerHTML = `${index + 1}. ${definition}`; // Add numbering
-              definitionElement.style.display = 'block';
-              container.appendChild(definitionElement);
-          });
+  // Function to display definitions in the order stored in Firebase
+  function displayDefinitions(definitionsOrder) {
+      const container = document.getElementById('definitionsContainer');
+      container.innerHTML = '';
+      definitionsOrder.forEach((definition, index) => {
+          const definitionElement = document.createElement('div');
+          definitionElement.className = 'definition';
+          definitionElement.innerHTML = `${index + 1}. ${definition}`; // Add numbering
+          definitionElement.style.display = 'block';
+          container.appendChild(definitionElement);
       });
   }
   
   // Function to end submissions
   function endSubmissions() {
-      database.ref('gamePhase').set('endSubmissions');
+      database.ref('definitions').once('value', function(snapshot) {
+          const definitions = [];
+          snapshot.forEach(function(childSnapshot) {
+              definitions.push(childSnapshot.val().text);
+          });
+          definitions.sort(() => Math.random() - 0.5); // Randomize order
+  
+          // Save the randomized order to Firebase
+          database.ref('definitionsOrder').set(definitions).then(() => {
+              database.ref('gamePhase').set('endSubmissions');
+          });
+      });
   }
   
   // Function to start the next round
   function nextRound() {
-      // Clear definitions and current word in Firebase
-      database.ref('definitions').remove().then(() => {
-          database.ref('currentWord').remove().then(() => {
-              database.ref('gamePhase').set('wordSubmission');
-          });
-      });
+      // Clear definitions, definitionsOrder, and current word in Firebase
+      database.ref('definitions').remove();
+      database.ref('definitionsOrder').remove();
+      database.ref('currentWord').remove();
+      database.ref('gamePhase').set('wordSubmission');
   
+      document.getElementById('definitionsContainer').innerHTML = '';
       currentWord = '';
       document.getElementById('currentWord').innerHTML = '<em>Waiting for next word...</em>';
-      database.ref('gamePhase').set('wordSubmission');
-      updateUIForPhase('wordSubmission');
-    }
+  }
   
   // Function to update the UI based on the current phase
   function updateUIForPhase(phase) {
@@ -143,7 +152,6 @@ const firebaseConfig = {
       document.getElementById('endSubmissionsButton').style.display = 'none';
       document.getElementById('definitionsHeader').style.display = 'none';
       document.getElementById('nextRoundButton').style.display = 'none';
-      document.getElementById('definitionsContainer').style.display = 'none';
   
       if (phase === 'definitionSubmission') {
           document.getElementById('submissionHeader').style.display = 'block';
@@ -155,9 +163,13 @@ const firebaseConfig = {
       } else if (phase === 'endSubmissions') {
           document.getElementById('definitionsHeader').style.display = 'block';
           document.getElementById('nextRoundButton').style.display = 'block';
-          document.getElementById('definitionsContainer').style.display = 'block';
           // Display the definitions only in the end submissions phase
-          displayDefinitions();
+          database.ref('definitionsOrder').once('value', function(snapshot) {
+              const definitionsOrder = snapshot.val();
+              if (definitionsOrder) {
+                  displayDefinitions(definitionsOrder);
+              }
+          });
       }
   }
   
