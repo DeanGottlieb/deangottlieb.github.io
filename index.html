@@ -48,15 +48,15 @@
                 <template id="playerItemTemplate">
                     <div class="playerItem" data-player-id="">
                         <span class="playerName"></span>
-                        <button type="button" class="decScore small-btn" title="Decrease points" onclick="changePlayerPoints(event, -1)">−</button>
-                        <span class="playerScore" style="width: 10px" aria-label="points">0</span>
-                        <button type="button" class="incScore small-btn" title="Increase points" onclick="changePlayerPoints(event, 1)">+</button>
-                        <button type="button" class="removePlayerBtn small-btn" title="Remove player" onclick="removePlayer(event)">x</button>
+                        <button type="button" class="scoreButton small-btn" onclick="changePlayerPoints(event, -1)">−</button>
+                        <span class="playerScore" aria-label="points">0</span>
+                        <button type="button" class="scoreButton small-btn" onclick="changePlayerPoints(event, 1)">+</button>
+                        <button type="button" class="removePlayerBtn small-btn" onclick="removePlayer(event)">x</button>
                     </div>
                 </template>
-                <div id="playerControls">
+                <div id="playerControls" style="display: inline-flex; align-items: flex-start;">
                     <input type="text" id="playerName" class="playerName" placeholder="Player name"/>
-                    <input type="button" id="addPlayerButton" value="Add player" onclick="addPlayer()"/>
+                    <button type="button" class="addPlayer" onclick="addPlayer()">+</button>
                 </div>
             </div>
         </row>

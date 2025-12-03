@@ -47,8 +47,7 @@ input[type="text"] {
 input[type="button"], button {
     background-color: #bb86fc;
     color: #ffffff;
-    border: none;
-    padding: 10px 20px;
+    border: none;    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     display: block;
@@ -101,9 +100,6 @@ input[type="button"].important:hover, button.important:hover {
     font-size: 14px; /* smaller font */
     line-height: 1;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     margin-left: 8px;
 }
 
@@ -118,6 +114,30 @@ input[type="button"].important:hover, button.important:hover {
     margin-bottom: 6px;
 }
 
+.scoreButton{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.addPlayer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    height: 44px;
+    margin-top: 0;
+    font-size: 20px;
+    padding: 5px 10px 5px 10px;
+}
+
 .playerName {
     width: 120px !important; /* keeps names aligned */
+}
+
+.playerScore{
+    width: 20px;
+    display: flex;
+    justify-content: center;
 }

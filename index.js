@@ -16,6 +16,15 @@ const firebaseConfig = {
   
   let currentWord = '';
   
+const addPlayerTextEl = document.getElementById('playerName');
+
+addPlayerTextEl.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
+        event.preventDefault(); // Prevent newline
+        addPlayer();
+    }
+});
+
   // Load the current word and phase from Firebase and listen for changes in real-time
   function loadCurrentWordAndPhase() {
       database.ref('currentWord').on('value', function(snapshot) {
