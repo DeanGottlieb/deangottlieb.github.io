@@ -175,4 +175,80 @@ const firebaseConfig = {
           });
       }
   }
-  
+// Function to add a player
+function addPlayer() {
+    const rawName = document.getElementById('playerName').value.trim();
+    if (!rawName) return;
+    const playerKey = sanitizeKey(rawName);
+    // store both a safe key and the original display name
+    editPlayers(playerKey, true, rawName);
+    document.getElementById('playerName').value = '';
+}
+
+// Function to add or remove a player (now stores displayName and score)
+function editPlayers(playerKey, isAdd, displayName) {
+    const playerRef = database.ref('players/' + playerKey);
+    if (isAdd) {
+        playerRef.set({
+            displayName: displayName || playerKey,
+            score: 0
+        }).then(() => {
+            console.log('Player added successfully!');
+        }).catch((error) => {
+            console.error('Error adding player: ' + error.message);
+        });
+    } else {
+        playerRef.remove().then(() => {
+            console.log('Player removed successfully!');
+        }).catch((error) => {
+            console.error('Error removing player: ' + error.message);
+        });
+    }
+}
+
+// helper to produce a Firebase-safe key from a player name
+function sanitizeKey(name) {
+    return name.replace(/[.#$\[\]\/]/g, '_');
+}
+
+// Listen for player list changes and render the list
+database.ref('players').on('value', function(snapshot) {
+    renderPlayers(snapshot);
+});
+
+function renderPlayers(snapshot) {
+    const playersList = document.getElementById('playersList');
+    playersList.innerHTML = '';
+    const template = document.getElementById('playerItemTemplate');
+    if (!template) return;
+
+    snapshot.forEach(child => {
+        const key = child.key;
+        const data = child.val() || {};
+        const node = template.content.firstElementChild.cloneNode(true);
+        node.dataset.playerId = key;
+        const nameSpan = node.querySelector('.playerName');
+        const scoreSpan = node.querySelector('.playerScore');
+        if (nameSpan) nameSpan.textContent = data.displayName || key;
+        if (scoreSpan) scoreSpan.textContent = (data.score || 0);
+        playersList.appendChild(node);
+    });
+}
+
+// Called by the +/- buttons in the player list
+function changePlayerPoints(event, delta) {
+    const item = event.target.closest('div.playerItem');
+    if (!item) return;
+    const key = item.dataset.playerId;
+    const scoreRef = database.ref('players/' + key + '/score');
+    scoreRef.transaction(current => (current || 0) + delta);
+}
+
+// Called by the Remove button in the player list
+function removePlayer(event) {
+    const item = event.target.closest('.playerItem');
+    if (!item) return;
+    const key = item.dataset.playerId;
+    if (!key) return;
+    editPlayers(key, false);
+}

@@ -60,12 +60,11 @@ input[type="button"]:hover, button:hover {
 }
 
 button.important {
-    background-color: #710808; /* Red color for important buttons */
-    margin-top: 60px; /* Further separate from other elements */
+    background-color: #bb86fc;
 }
 
 input[type="button"].important:hover, button.important:hover {
-    background-color: #af4141;
+    background-color: #3700b3;
 }
 
 .definition {
@@ -86,4 +85,39 @@ input[type="button"].important:hover, button.important:hover {
 
 #wordForm {
     margin-top: 40px; /* Ensures some spacing from the other elements */
+}
+
+.removePlayerBtn {
+    display: inline-block;
+}
+
+/* Compact button style for scoreboard controls */
+.small-btn {
+    background: #bb86fc;
+    color: #ffffff;
+    border: none;
+    padding: 4px 8px; /* small padding */
+    border-radius: 4px;
+    font-size: 14px; /* smaller font */
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+}
+
+.small-btn:hover {
+    background: #3700b3;
+}
+
+.playerItem {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.playerName {
+    width: 120px !important; /* keeps names aligned */
 }

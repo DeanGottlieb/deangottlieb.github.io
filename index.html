@@ -7,32 +7,60 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Phase Headers -->
-    <h1 id="submissionHeader" style="display: none;">Submit Your Definition <span id="definitionCount">(0)</span></h1>
-    <h1 id="definitionsHeader" style="display: none;">Submitted Definitions</h1>
+    <col>
+        <row>  
+            <!-- Title -->
+            <h2>Fictionary</h2>
+            <!-- Phase Headers -->
+            <h1 id="submissionHeader" style="display: none;">Submit Your Definition <span id="definitionCount">(0)</span></h1>
+            <h1 id="definitionsHeader" style="display: none;">Submitted Definitions</h1>
 
-    <!-- Word of the Round -->
-    <h1 id="wordDisplay"><span id="currentWord"><em>Waiting for next word...</em></span></h1>
+            <!-- Word of the Round -->
+            <h1 id="wordDisplay"><span id="currentWord"><em>Waiting for next word...</em></span></h1>
 
-    <!-- Word Form -->
-    <form id="wordForm">
-        <input type="text" id="word" name="word">
-        <input type="button" value="Submit Word" onclick="submitWord()">
-    </form>
-    <button id="startDefinitionsButton" onclick="startDefinitions()" class="important">Start Submitting Definitions</button>
-    
-    <!-- Definition Form -->
-    <form id="definitionForm" style="display: none;">
-        <label for="definition">Your Definition:</label>
-        <textarea id="definition" name="definition" rows="4" cols="40"></textarea>
-        <input type="button" value="Submit" onclick="submitDefinition()">
-    </form>
-    
-    <!-- Definitions Container -->
-    <div id="definitionsContainer"></div>
-    <button id="endSubmissionsButton" onclick="endSubmissions()" style="display: none;" class="important">End Submissions</button>
-    <button id="nextRoundButton" onclick="nextRound()" style="display: none;" class="important">Next Round</button>
-
+            <!-- Word Form -->
+            <form id="wordForm">
+                <input type="text" id="word" placeholder="Fictionary word">
+                <input type="button" value="Submit Word" onclick="submitWord()">
+            </form>
+            <button id="startDefinitionsButton" onclick="startDefinitions()" class="important">Start Submitting Definitions</button>
+            
+            <!-- Definition Form -->
+            <form id="definitionForm" style="display: none;">
+                <label for="definition">Your Definition:</label>
+                <textarea id="definition" name="definition" rows="4" cols="40"></textarea>
+                <input type="button" value="Submit" onclick="submitDefinition()">
+            </form>
+            
+            <!-- Definitions Container -->
+            <div id="definitionsContainer"></div>
+            <button id="endSubmissionsButton" onclick="endSubmissions()" style="display: none;" class="important">End Submissions</button>
+            <button id="nextRoundButton" onclick="nextRound()" style="display: none;" class="important">Next Round</button>
+        </row>
+        <row>
+            <div id="scoreboardContainer"  style="margin-top: 80px;">
+                <!-- Scoreboard -->
+                <h2>Scoreboard</h2>
+                <div id="playersListContainer"></div>
+                    <h3>Players</h3>
+                    <ul id="playersList" style="display: contents" aria-live="polite"></ul>
+                </div>
+                <template id="playerItemTemplate">
+                    <div class="playerItem" data-player-id="">
+                        <span class="playerName"></span>
+                        <button type="button" class="decScore small-btn" title="Decrease points" onclick="changePlayerPoints(event, -1)">−</button>
+                        <span class="playerScore" aria-label="points">0</span>
+                        <button type="button" class="incScore small-btn" title="Increase points" onclick="changePlayerPoints(event, 1)">+</button>
+                        <button type="button" class="removePlayerBtn small-btn" title="Remove player" onclick="removePlayer(event)">x</button>
+                    </div>
+                </template>
+                <div id="playerControls">
+                    <input type="text" id="playerName" class="playerName" placeholder="Player name"/>
+                    <input type="button" id="addPlayerButton" value="Add player" onclick="addPlayer()"/>
+                </div>
+            </div>
+        </row>
+    </col>
     <!-- Firebase and Script -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
