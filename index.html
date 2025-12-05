@@ -12,21 +12,21 @@
             <!-- Title -->
             <h2>Fictionary</h2>
             <!-- Phase Headers -->
-            <h1 id="submissionHeader" style="display: none;">Submit Your Definition <span id="definitionCount">(0)</span></h1>
-            <h1 id="definitionsHeader" style="display: none;">Submitted Definitions</h1>
+            <h1 id="submissionHeader">Submit Your Definition <span id="definitionCount">(0)</span></h1>
+            <h1 id="definitionsHeader">Submitted Definitions</h1>
 
             <!-- Word of the Round -->
             <h1 id="wordDisplay"><span id="currentWord"><em>Waiting for next word...</em></span></h1>
 
             <!-- Word Form -->
             <form id="wordForm">
-                <input type="text" id="word" placeholder="Fictionary word">
-                <input type="button" value="Submit Word" onclick="submitWord()">
+                <input type="text" id="word" class="wordInput" placeholder="Fictionary word">
+                <button type="button" class="add" onclick="submitWord()">✓</button>
             </form>
             <button id="startDefinitionsButton" onclick="startDefinitions()" class="important">Start Submitting Definitions</button>
             
             <!-- Definition Form -->
-            <form id="definitionForm" style="display: none;">
+            <form id="definitionForm">
                 <label for="definition">Your Definition:</label>
                 <textarea id="definition" name="definition" rows="4" cols="40"></textarea>
                 <input type="button" value="Submit" onclick="submitDefinition()">
@@ -34,16 +34,16 @@
             
             <!-- Definitions Container -->
             <div id="definitionsContainer"></div>
-            <button id="endSubmissionsButton" onclick="endSubmissions()" style="display: none;" class="important">End Submissions</button>
-            <button id="nextRoundButton" onclick="nextRound()" style="display: none;" class="important">Next Round</button>
+            <button id="endSubmissionsButton" onclick="endSubmissions()" class="important">End Submissions</button>
+            <button id="nextRoundButton" onclick="nextRound()" class="important">Next Round</button>
         </row>
         <row>
-            <div id="scoreboardContainer"  style="margin-top: 80px;">
+            <div id="scoreboardContainer">
                 <!-- Scoreboard -->
                 <h2>Scoreboard</h2>
-                <div id="playersListContainer"></div>
+                <div id="playersListContainer">
                     <h3>Players</h3>
-                    <ul id="playersList" style="display: contents" aria-live="polite"></ul>
+                    <ul id="playersList" aria-live="polite"></ul>
                 </div>
                 <template id="playerItemTemplate">
                     <div class="playerItem" data-player-id="">
@@ -54,9 +54,15 @@
                         <button type="button" class="removePlayerBtn small-btn" onclick="removePlayer(event)">x</button>
                     </div>
                 </template>
-                <div id="playerControls" style="display: inline-flex; align-items: flex-start;">
-                    <input type="text" id="playerName" class="playerName" placeholder="Player name"/>
-                    <button type="button" class="addPlayer" onclick="addPlayer()">+</button>
+                <div id="playerControls">
+                    <div class="playerInputRow">
+                        <input type="text" id="playerName" class="playerName" placeholder="Player name"/>
+                        <button type="button" class="add" onclick="addPlayer()">✓</button>
+                    </div>
+                    <div id="adminButtons">
+                        <button type="button" id="clearAllPlayersBtn" onclick="clearAllPlayers()">Clear All Players</button>
+                        <button type="button" id="clearScoresBtn" onclick="clearScores()">Clear Scores</button>
+                    </div>
                 </div>
             </div>
         </row>

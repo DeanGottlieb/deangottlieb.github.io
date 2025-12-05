@@ -10,14 +10,8 @@ h1 {
     color: #bb86fc;
 }
 
-form, div, button {
-    margin-top: 20px;
-}
-
-label, textarea, input[type="text"] {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
+#submissionHeader, #definitionsHeader {
+    display: none;
 }
 
 textarea {
@@ -44,6 +38,10 @@ input[type="text"] {
     max-width: 300px; /* Maximum width for the new word text box */
 }
 
+label {
+    display: block;
+}
+
 input[type="button"], button {
     background-color: #bb86fc;
     color: #ffffff;
@@ -67,7 +65,7 @@ input[type="button"].important:hover, button.important:hover {
 }
 
 .definition {
-    display: none;
+    display: block;
     background-color: #1e1e1e;
     color: #ffffff;
     border: 1px solid #bb86fc;
@@ -82,8 +80,24 @@ input[type="button"].important:hover, button.important:hover {
     color: #bb86fc;
 }
 
-#wordForm {
-    margin-top: 40px; /* Ensures some spacing from the other elements */
+#scoreboardContainer {
+    margin-top: 80px;
+}
+
+#playersList {
+    display: contents;
+}
+
+#definitionForm {
+    display: none;
+}
+
+#endSubmissionsButton {
+    display: none;
+}
+
+#nextRoundButton {
+    display: none;
 }
 
 .removePlayerBtn {
@@ -114,6 +128,23 @@ input[type="button"].important:hover, button.important:hover {
     margin-bottom: 6px;
 }
 
+.playerInputRow {
+    display: inline-flex;
+}
+
+#playerControls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 50px;
+}
+
+#adminButtons {
+    display: inline-flex;
+    gap: 10px;
+}
+
 .scoreButton{
     display: inline-flex;
     align-items: center;
@@ -121,19 +152,27 @@ input[type="button"].important:hover, button.important:hover {
     margin: 0;
 }
 
-.addPlayer {
+.add {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     margin-left: 5px;
-    height: 44px;
     margin-top: 0;
     font-size: 20px;
     padding: 5px 10px 5px 10px;
+    height: 45px;
 }
 
 .playerName {
     width: 120px !important; /* keeps names aligned */
+    margin-bottom: 0px !important;
+    max-height: 35px
+}
+
+.wordInput {
+    width: 150px !important; /* keeps names aligned */
+    margin-bottom: 0px !important;
+    max-height: 35px;
 }
 
 .playerScore{
