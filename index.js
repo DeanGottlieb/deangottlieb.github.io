@@ -43,30 +43,6 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 
 let currentWord = '';
-  
-const addPlayerTextEl = document.getElementById('playerName');
-addPlayerTextEl.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
-        event.preventDefault(); // Prevent newline
-        addPlayer();
-    }
-});
-
-const submitWordEl = document.getElementById('word');
-submitWordEl.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
-        event.preventDefault(); // Prevent newline
-        submitWord();
-    }
-});
-
-const submitDefinitionEl = document.getElementById('definition');
-submitDefinitionEl.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
-        event.preventDefault(); // Prevent newline
-        submitWord();
-    }
-});
 
 // Call loadCurrentWordAndPhase when the page loads
 window.onload = function() {
@@ -361,6 +337,83 @@ export function changePlayerPoints(event, delta) {
     const scoreRef = database.ref('players/' + key + '/score');
     scoreRef.transaction(current => (current || 0) + delta);
 }
+
+// Hold-to-repeat functionality for score buttons
+let holdInterval = null;
+let holdButton = null;
+
+function startHold(button, delta) {
+    if (holdInterval) clearInterval(holdInterval);
+    holdButton = button;
+    // Initial delay before repeating
+    const initialDelay = setTimeout(() => {
+        // Repeat every 100ms while held
+        holdInterval = setInterval(() => {
+            changePlayerPoints({ target: button }, delta);
+        }, 100);
+    }, 500);
+    button._holdTimeout = initialDelay;
+}
+
+function stopHold(button) {
+    if (button._holdTimeout) clearTimeout(button._holdTimeout);
+    if (holdInterval) clearInterval(holdInterval);
+    holdInterval = null;
+    holdButton = null;
+}
+
+// Attach hold listeners to all score buttons
+window.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('scoreButton')) {
+            const delta = e.target.textContent.includes('+') ? 1 : -1;
+            startHold(e.target, delta);
+        }
+    });
+    
+    document.addEventListener('touchstart', (e) => {
+        if (e.target.classList.contains('scoreButton')) {
+            const delta = e.target.textContent.includes('+') ? 1 : -1;
+            startHold(e.target, delta);
+        }
+    });
+    
+    document.addEventListener('mouseup', (e) => {
+        if (e.target.classList.contains('scoreButton')) {
+            stopHold(e.target);
+        }
+    });
+    
+    document.addEventListener('touchend', (e) => {
+        if (e.target.classList.contains('scoreButton')) {
+            stopHold(e.target);
+        }
+    });
+});
+  
+const addPlayerTextEl = document.getElementById('playerName');
+addPlayerTextEl.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
+        event.preventDefault(); // Prevent newline
+        addPlayer();
+    }
+});
+
+const submitWordEl = document.getElementById('word');
+submitWordEl.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
+        event.preventDefault(); // Prevent newline
+        submitWord();
+    }
+});
+
+const submitDefinitionEl = document.getElementById('definition');
+submitDefinitionEl.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
+        event.preventDefault(); // Prevent newline
+        submitWord();
+    }
+});
 
 // Called by the Remove button in the player list
 export function removePlayer(event) {
