@@ -1,6 +1,8 @@
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { GoogleGenAI, Type } from "https://esm.run/@google/genai";
 
+// Initialize the client
 const fakeConfig = {
     apiKey: "@Hy`Rx@fYkfY0AcxHw^r8jw0TkI3pgLkYKugw2X",
     authDomain: "ehbshnm`qx,d84c2-ehqda`rd`oo-bnl",
@@ -10,6 +12,12 @@ const fakeConfig = {
     appId: "0980656/1707229vda9e86be14437b157/8bac7e7",
     measurementId: "F,6O3U/30F1O"
 };
+
+const fakeAIConfig = {
+    key: "BJ{bTzEctmoRiH.P1jNM2UzRdC.::sIFT4cQMNR"
+};
+const aiConfig = shiftConfigAlphaNum(fakeAIConfig, 1);
+const firebaseConfig = shiftConfigAlphaNum(fakeConfig, -1);
 
 function shiftConfigAlphaNum(config, offset) {
     // Shift only alphanumeric characters by offset
@@ -29,19 +37,6 @@ function shiftConfigAlphaNum(config, offset) {
     }
     return result;
 }
-
-function areConfigsEqual() {
-    const config = shiftConfigAlphaNum(fakeConfig, -1);
-    console.log(config.apiKey === firebaseConfig.apiKey);
-    console.log(config.authDomain === firebaseConfig.authDomain)
-    console.log(config.projectId === firebaseConfig.projectId)
-    console.log(config.storageBucket === firebaseConfig.storageBucket)
-    console.log(config.messagingSenderId === firebaseConfig.messagingSenderId)
-    console.log(config.appId === firebaseConfig.appId)
-    console.log(config.measurementId === firebaseConfig.measurementId)
-}
-
-const firebaseConfig = shiftConfigAlphaNum(fakeConfig, -1);
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -87,10 +82,11 @@ function loadCurrentWordAndPhase() {
 window.onload = function() {
     loadCurrentWordAndPhase();
     updateDefinitionCount();
+    updatePlayerCount();
 }
 
 // Function to submit a new word
-function submitWord() {
+export function submitWord() {
     const word = document.getElementById('word').value.trim();
     if (word === '') {
         console.error('Word cannot be empty!');
@@ -111,13 +107,32 @@ function submitWord() {
 }
 
 // Function to start submitting definitions
-function startDefinitions() {
+export async function startDefinitions() {
+    const word = document.getElementById('currentWord').innerText;
+    if (word === '' || word === 'Waiting for next word...') {
+        console.error('Please submit a word before starting definition submissions!');
+        return;
+    }
+
     database.ref('gamePhase').set('definitionSubmission');
+    if (document.getElementById('checkboxUseAI').checked) {
+        const word = document.getElementById('currentWord').innerText;
+        console.log("Generating AI definition for word: " + word);
+        const aiDef = await getGeneratedDefinition(word);
+        submitDefinition(aiDef);
+    }
 }
 
 // Function to submit a definition
-function submitDefinition() {
-    const definition = document.getElementById('definition').value.trim();
+export function submitDefinition(aiDef) {
+    let definition = '';
+    if (aiDef) {
+        definition = aiDef;
+    }
+    else {
+        definition = document.getElementById('definition').value.trim();
+    }
+
     if (definition === '') {
         console.error('Definition cannot be empty!');
         return;
@@ -157,9 +172,29 @@ function displayDefinitions(definitionsOrder) {
 }
 
 // Function to end submissions
-function endSubmissions() {
+export function endSubmissions() {
+    database.ref('definitions').once('value', function(snapshot) {
+        const definitionCount = snapshot.numChildren();
+        database.ref('players').once('value', function(playersSnapshot) {
+            const playerCount = playersSnapshot.numChildren();
+            if (definitionCount < playerCount) {
+                console.log(`Warning: Only ${definitionCount} definitions for ${playerCount} players`);
+            }
+        });
+    });
     database.ref('definitions').once('value', function(snapshot) {
         const definitions = [];
+        const definitionCount = snapshot.numChildren();
+        let cont = true;
+        database.ref('players').once('value', function(playersSnapshot) {
+            const playerCount = playersSnapshot.numChildren();
+            if (definitionCount < playerCount) {
+                cont = confirm('Are you sure everyone has submitted their definitions?')
+            }
+        });
+        if (!cont) {
+            return;
+        }
         snapshot.forEach(function(childSnapshot) {
             definitions.push(childSnapshot.val().text);
         });
@@ -173,7 +208,7 @@ function endSubmissions() {
 }
 
 // Function to start the next round
-function nextRound() {
+export function nextRound() {
     // Clear definitions, definitionsOrder, and current word in Firebase
     database.ref('definitions').remove();
     database.ref('definitionsOrder').remove();
@@ -189,6 +224,7 @@ function nextRound() {
 function updateUIForPhase(phase) {
     document.getElementById('wordForm').style.display = 'none';
     document.getElementById('startDefinitionsButton').style.display = 'none';
+    document.getElementById('useAI').style.display = 'none';
     document.getElementById('submissionHeader').style.display = 'none';
     document.getElementById('definitionForm').style.display = 'none';
     document.getElementById('endSubmissionsButton').style.display = 'none';
@@ -203,6 +239,7 @@ function updateUIForPhase(phase) {
     } else if (phase === 'wordSubmission') {
         document.getElementById('wordForm').style.display = 'inline-flex';
         document.getElementById('startDefinitionsButton').style.display = 'block';
+        document.getElementById('useAI').style.display = 'flex';
     } else if (phase === 'endSubmissions') {
         document.getElementById('definitionsHeader').style.display = 'block';
         document.getElementById('nextRoundButton').style.display = 'block';
@@ -237,16 +274,28 @@ function editPlayers(playerKey, isAdd, displayName) {
             score: 0
         }).then(() => {
             console.log('Player added successfully!');
+            updatePlayerCount();
         }).catch((error) => {
             console.error('Error adding player: ' + error.message);
         });
     } else {
         playerRef.remove().then(() => {
             console.log('Player removed successfully!');
+            updatePlayerCount();
         }).catch((error) => {
             console.error('Error removing player: ' + error.message);
         });
     }
+}
+
+function updatePlayerCount() {
+    database.ref('players').once('value', function(snapshot) {
+        const count = snapshot.numChildren();
+        const playersHeader = document.getElementById('playersHeader');
+        if (playersHeader) {
+            playersHeader.textContent = `Players (${count})`;
+        }
+    });
 }
 
 // helper to produce a Firebase-safe key from a player name
@@ -279,7 +328,7 @@ function renderPlayers(snapshot) {
 }
 
 // Called by the +/- buttons in the player list
-function changePlayerPoints(event, delta) {
+export function changePlayerPoints(event, delta) {
     const item = event.target.closest('div.playerItem');
     if (!item) return;
     const key = item.dataset.playerId;
@@ -288,7 +337,7 @@ function changePlayerPoints(event, delta) {
 }
 
 // Called by the Remove button in the player list
-function removePlayer(event) {
+export function removePlayer(event) {
     const item = event.target.closest('.playerItem');
     if (!item) return;
     const key = item.dataset.playerId;
@@ -297,18 +346,19 @@ function removePlayer(event) {
 }
 
 // Function to clear all players
-function clearAllPlayers() {
+export function clearAllPlayers() {
     if (confirm('Are you sure you want to clear all players?')) {
         database.ref('players').remove().then(() => {
             console.log('All players cleared successfully!');
         }).catch((error) => {
             console.error('Error clearing players: ' + error.message);
         });
+        document.getElementById('checkboxUseAI').checked = false;
     }
 }
 
 // Function to clear all scores
-function clearScores() {
+export function clearScores() {
     if (confirm('Are you sure you want to clear all scores?')) {
         database.ref('players').once('value', function(snapshot) {
             snapshot.forEach(child => {
@@ -321,3 +371,74 @@ function clearScores() {
         });
     }
 }
+
+export function toggleUseAI() {
+    const checkbox = document.getElementById('checkboxUseAI');
+    if (checkbox.checked) {
+        editPlayers('Google Gemini', true, 'Google Gemini');
+    } 
+    else {
+        editPlayers('Google Gemini', false);
+    }
+}
+
+async function getGeneratedDefinition(word) {
+    if (word=="") {
+        return;
+    }
+    const ai = new GoogleGenAI({ apiKey: aiConfig.key });
+    const modelId = "gemini-2.5-flash"; 
+
+    try {
+        const response = await ai.models.generateContent({
+        model: modelId,
+        contents: `Generate a realistic but completely fake dictionary definition for the word "${word}". 
+        
+        Guidelines:
+        1. Tone: Emulate the tone and style of a high school student attempting to fool others with a fake definition of an unfamiliar word.
+        2. Focus on concrete, tangible definitions rather than abstract concepts.
+        3. Describe observable objects, actions, or feature in a straightforward way.
+        4. Be 1-2 sentences in length, with definitions ranging in number and length of words used.
+        5. Do not include the word itself in the definition, even as a preface.
+        6. You are only allowed to use 4 words that are over 6 letters long.
+        7. The definition must be sematically unique from the real definition of the word.`,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+                definition: { type: Type.STRING, description: "The fabricated definition text." }
+            },
+            required: ["definition"]
+            }
+        }
+        });
+
+        if (response.text) {
+            const responseData = JSON.parse(response.text);
+            const definition = responseData.definition.trim();
+            console.log("Generated definition: " + definition);
+            return definition;
+        } 
+        else {
+            throw new Error("No response text received");
+        }
+    } 
+    catch (error) {
+        console.error("Gemini API Error:", error);
+        throw error;
+    }
+}
+
+// Expose functions to global window object for onclick handlers
+window.submitWord = submitWord;
+window.startDefinitions = startDefinitions;
+window.submitDefinition = submitDefinition;
+window.endSubmissions = endSubmissions;
+window.nextRound = nextRound;
+window.addPlayer = addPlayer;
+window.changePlayerPoints = changePlayerPoints;
+window.removePlayer = removePlayer;
+window.clearAllPlayers = clearAllPlayers;
+window.clearScores = clearScores;
+window.toggleUseAI = toggleUseAI

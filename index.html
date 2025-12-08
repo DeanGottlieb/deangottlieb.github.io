@@ -24,7 +24,11 @@
                 <button type="button" class="add" onclick="submitWord()">✓</button>
             </form>
             <button id="startDefinitionsButton" onclick="startDefinitions()" class="important">Start Submitting Definitions</button>
-            
+            <div id="useAI">
+                <input type="checkbox" id="checkboxUseAI" onclick="toggleUseAI()">
+                <label for="checkboxUseAI">Include an AI generated definition</label>
+            </div>
+
             <!-- Definition Form -->
             <form id="definitionForm">
                 <label for="definition">Your Definition:</label>
@@ -42,7 +46,7 @@
                 <!-- Scoreboard -->
                 <h2>Scoreboard</h2>
                 <div id="playersListContainer">
-                    <h3>Players</h3>
+                    <h3 id="playersHeader">Players</h3>
                     <ul id="playersList" aria-live="polite"></ul>
                 </div>
                 <template id="playerItemTemplate">
@@ -70,6 +74,13 @@
     <!-- Firebase and Script -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="index.js"></script>
+    <script src="index.js" type="module"></script>
+    <script type="importmap">
+        {
+            "imports": {
+            "@google/genai": "https://esm.run/@google/genai"
+            }
+        }
+    </script>
 </body>
 </html>

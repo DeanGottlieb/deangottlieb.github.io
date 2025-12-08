@@ -180,3 +180,9 @@ input[type="button"].important:hover, button.important:hover {
     display: flex;
     justify-content: center;
 }
+
+#useAI {
+    margin-top: 10px;
+    display: inline-flex;
+    font-style: italic;
+}

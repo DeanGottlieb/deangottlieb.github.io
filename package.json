@@ -1,5 +1,9 @@
 {
   "dependencies": {
+    "@google/genai": "^1.31.0",
     "firebase": "^11.0.2"
+  },
+  "devDependencies": {
+    "vite": "^6.4.1"
   }
 }
