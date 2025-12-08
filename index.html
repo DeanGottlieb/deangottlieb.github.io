@@ -20,7 +20,7 @@
 
             <!-- Word Form -->
             <form id="wordForm">
-                <input type="text" id="word" class="wordInput" placeholder="Fictionary word">
+                <input type="text" id="word" class="wordInput" placeholder="Fictionary word" autocapitalize="sentences">
                 <button type="button" class="add" onclick="submitWord()">✓</button>
             </form>
             <button id="startDefinitionsButton" onclick="startDefinitions()" class="important">Start Submitting Definitions</button>
@@ -32,7 +32,7 @@
             <!-- Definition Form -->
             <form id="definitionForm">
                 <label for="definition">Your Definition:</label>
-                <textarea id="definition" name="definition" rows="4" cols="40"></textarea>
+                <textarea id="definition" name="definition" rows="4" cols="40" autocapitalize="sentences"></textarea>
                 <input type="button" value="Submit" onclick="submitDefinition()">
             </form>
             
@@ -60,7 +60,7 @@
                 </template>
                 <div id="playerControls">
                     <div class="playerInputRow">
-                        <input type="text" id="playerName" class="playerName" placeholder="Player name"/>
+                        <input type="text" id="playerName" class="playerName" placeholder="Player name" autocapitalize="sentences"/>
                         <button type="button" class="add" onclick="addPlayer()">✓</button>
                     </div>
                     <div id="adminButtons">

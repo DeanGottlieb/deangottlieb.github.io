@@ -45,13 +45,46 @@ var database = firebase.database();
 let currentWord = '';
   
 const addPlayerTextEl = document.getElementById('playerName');
-
 addPlayerTextEl.addEventListener('keydown', function(event) {
     if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
         event.preventDefault(); // Prevent newline
         addPlayer();
     }
 });
+
+const submitWordEl = document.getElementById('word');
+submitWordEl.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
+        event.preventDefault(); // Prevent newline
+        submitWord();
+    }
+});
+
+const submitDefinitionEl = document.getElementById('definition');
+submitDefinitionEl.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) { // If Enter is pressed without Shift
+        event.preventDefault(); // Prevent newline
+        submitWord();
+    }
+});
+
+// Call loadCurrentWordAndPhase when the page loads
+window.onload = function() {
+    loadCurrentWordAndPhase();
+    updateDefinitionCount();
+    updatePlayerCount();
+    setUseAICheckbox();
+}
+
+function setUseAICheckbox() {
+    // Initialize the AI usage checkbox based on whether "Google Gemini" player exists
+    database.ref('players/Google Gemini').once('value', function(snapshot) {
+        const checkbox = document.getElementById('checkboxUseAI');
+        if (checkbox) {
+            checkbox.checked = !!snapshot.exists();
+        }
+    });
+}
 
 // Load the current word and phase from Firebase and listen for changes in real-time
 function loadCurrentWordAndPhase() {
@@ -76,13 +109,6 @@ function loadCurrentWordAndPhase() {
             displayDefinitions(definitionsOrder);
         }
     });
-}
-
-// Call loadCurrentWordAndPhase when the page loads
-window.onload = function() {
-    loadCurrentWordAndPhase();
-    updateDefinitionCount();
-    updatePlayerCount();
 }
 
 // Function to submit a new word
@@ -258,7 +284,7 @@ function updateUIForPhase(phase) {
 // Function to add a player
 function addPlayer() {
     const rawName = document.getElementById('playerName').value.trim();
-    if (!rawName) return;
+    if (!rawName || rawName == "Google Gemini") return;
     const playerKey = sanitizeKey(rawName);
     // store both a safe key and the original display name
     editPlayers(playerKey, true, rawName);
@@ -343,6 +369,7 @@ export function removePlayer(event) {
     const key = item.dataset.playerId;
     if (!key) return;
     editPlayers(key, false);
+    setUseAICheckbox();
 }
 
 // Function to clear all players
