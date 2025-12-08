@@ -150,6 +150,11 @@ input[type="button"].important:hover, button.important:hover {
     align-items: center;
     justify-content: center;
     margin: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: manipulation;
 }
 
 .add {
